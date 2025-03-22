@@ -14,6 +14,20 @@
             background-color: #f9f9f9;
             white-space: pre-line; /* Preserves line breaks in lyrics */
         }
+        #commentary, #train-schedule {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+        iframe {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -42,13 +56,30 @@
             <li><a href="#" onclick="playAtTime(442, 'Lautern Allez, \n Lautern Allez,\n Lautern Allez Allez Allez Allez Allez,\n Lautern Allez [Lautern Allez],\n Lautern Allez Allez Allez Allez Allez!')">7:22 - Chant 15 : "Lautern Allez"</a></li>
             <li><a href="#" onclick="playAtTime(475, 'Oh FCK dort auf dem Feld, \n du bist das allerschoenste auf der Welt,\n Schau in den Block,\n Und hoer uns schrein, \n Kaiserslautern du bist nie allein!')">7:55 - Chant 16 : "Oh FCK"</a></li>
             <li><a href="#" onclick="playAtTime(508, 'Drum sagen wir auf Wiedersehen, \n Die Zeit mit euch war wunderschoen, \n Es ist wohl besser jetzt zu gehen,\n wir wollen keine Traenen sehen, \n Schoenen Gruss und auf Wiedersehen!')">8:28 - Chant 17 : "Auf Wiedersehen!"</a></li>
-
-
         </ul>
     </div>
     <div id="lyrics">
         <!-- Lyrics will appear here -->
     </div>
+
+    <!-- Commentary Section -->
+    <div id="commentary">
+        <h2>Commentary</h2>
+        <form id="commentForm">
+            <textarea id="comment" placeholder="Leave a comment..."></textarea><br>
+            <button type="submit">Submit</button>
+        </form>
+        <div id="comments">
+            <!-- Comments will appear here -->
+        </div>
+    </div>
+
+    <!-- Train Schedule Section -->
+    <div id="train-schedule">
+        <h2>Train Departures from Mannheim to Kaiserslautern</h2>
+        <iframe title="bwegt Fahrplanauskunft-Widget" frameborder="0" style="border: 0;" width="340" height="450" src="https://www.bwegt.de/efa-widget/index.html?destination=de%3A07312%3A9035&destinationName=Kaiserslautern%2C%20Hbf"></iframe>
+    </div>
+
     <script>
         function playAtTime(time, lyrics) {
             const audio = document.getElementById("audio");
@@ -61,6 +92,17 @@
             // Display the lyrics
             lyricsDiv.textContent = lyrics;
         }
+
+        // Commentary Section
+        document.getElementById("commentForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const comment = document.getElementById("comment").value;
+            const commentsDiv = document.getElementById("comments");
+            const newComment = document.createElement("p");
+            newComment.textContent = comment;
+            commentsDiv.appendChild(newComment);
+            document.getElementById("comment").value = ""; // Clear the textarea
+        });
     </script>
 </body>
 </html>
