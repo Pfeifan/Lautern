@@ -3,6 +3,7 @@
 <head>
     <title>FCK Fan Chants</title>
     <style>
+        /* Your existing CSS */
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -29,6 +30,11 @@
             margin-top: 10px;
         }
     </style>
+    <!-- Add Firebase SDK -->
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <!-- Firebase Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
 <body>
     <h1>FCK Fan Chants</h1>
@@ -58,22 +64,23 @@
             <li><a href="#" onclick="playAtTime(508, 'Drum sagen wir auf Wiedersehen, \n Die Zeit mit euch war wunderschoen, \n Es ist wohl besser jetzt zu gehen,\n wir wollen keine Traenen sehen, \n Schoenen Gruss und auf Wiedersehen!')">8:28 - Chant 17 : "Auf Wiedersehen!"</a></li>
         </ul>
     </div>
-    <div id="lyrics">
-        <!-- Lyrics will appear here -->
-    </div>
+    
+</div>
+<div id="lyrics">
+    <!-- Lyrics will appear here -->
+</div>
 
-    <!-- Commentary Section -->
-    <div id="commentary">
-        <h2>Commentary</h2>
-        <form id="commentForm">
-            <textarea id="comment" placeholder="Leave a comment..."></textarea><br>
-            <button type="submit">Submit</button>
-        </form>
-        <div id="comments">
-            <!-- Comments will appear here -->
-        </div>
+<!-- Commentary Section -->
+<div id="commentary">
+    <h2>Commentary</h2>
+    <form id="commentForm">
+        <textarea id="comment" placeholder="Leave a comment..."></textarea><br>
+        <button type="submit">Submit</button>
+    </form>
+    <div id="comments">
+        <!-- Comments will appear here -->
     </div>
-
+</div>
     <!-- Train Schedule Section -->
     <div id="train-schedule">
         <h2>Train Departures from Mannheim to Kaiserslautern</h2>
@@ -81,6 +88,117 @@
     </div>
 
     <script>
+        // Firebase configuration (replace with your own)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAAUC13NxSXWbCQWdP3nyEk6cIZdMj-RXY",
+            authDomain: "lautern-8c5a5.firebaseapp.com",
+            projectId: "lautern-8c5a5",
+            storageBucket: "lautern-8c5a5.firebasestorage.app",
+            messagingSenderId: "669084300516",
+            appId: "1:669084300516:web:4c71e40c9eb6fc83f1a8f1",
+            measurementId: "G-YCXEGVNPHH"
+                };
+            
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+
+
+        document.getElementById("commentForm").addEventListener("submit", function (event) {
+    event.preventDefault(); // Prevent form submission
+    const comment = document.getElementById("comment").value;
+
+    console.log("Submitting comment:", comment); // Debug: Check if comment is captured
+
+    // Save comment to Firestore
+    db.collection("comments").add({
+        text: comment,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    })
+    .then(() => {
+        console.log("Comment saved!"); // Debug: Check if Firestore save is successful
+        document.getElementById("comment").value = ""; // Clear the textarea
+        loadComments(); // Reload comments
+    })
+    .catch((error) => {
+        console.error("Error saving comment: ", error); // Debug: Check for errors
+    });
+});
+
+        // Load comments from Firestore
+        function loadComments() {
+            const commentsDiv = document.getElementById("comments");
+            commentsDiv.innerHTML = ""; // Clear existing comments
+
+            db.collection("comments")
+                .orderBy("timestamp", "desc") // Sort by timestamp (newest first)
+                .get()
+                .then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        const comment = doc.data().text;
+                        const newComment = document.createElement("p");
+                        newComment.textContent = comment;
+                        commentsDiv.appendChild(newComment);
+                    });
+                })
+                .catch((error) => {
+                    console.error("Error loading comments: ", error);
+                });
+        }
+
+        // Load comments when the page loads
+        window.onload = loadComments;
+
+
+                // Define the chants with their start times and lyrics
+                const chants = [
+            { time: 0, lyrics: 'Trotz der zweiten Liga,\nDeutscher Pokal Sieger,\n1996 FCK !' },
+            { time: 30, lyrics: 'Die Geschichte ist einmalig, \n Jedes Kind weiss wie es war,\n Nach dem Aufstieg Deutscher Meister, \n das ist nur der FCK!' },
+            { time: 67, lyrics: 'Auf gehts Lautern Kaempfen und Siegen!' },
+            { time: 90, lyrics: 'Karlsruuh, Karlsruuh, wir scheissen euch zu!' },
+            { time: 108, lyrics: 'Shalalalalal Shalalalala Forza FCK, Forza FCK, \n Forza Forza Forza Fck' },
+            { time: 152, lyrics: 'Hoert ihr die Kurve schrein, \n Alles fuer den Verein, \n Wir lassen dich nie im Stich, \n Lautern wir lieben dich!' },
+            { time: 199, lyrics: 'Shalalalala Kaiserlautern!' },
+            { time: 239, lyrics: 'Aiaiaiai Fc Kaiserslautern, \n wir singen und tanzen auf jedem Fussballplatz,\n Ein Schuss, ein Tor, die Lautrer!' },
+            { time: 279, lyrics: 'Oh FCK dort auf dem Feld, \n du bist das allerschoenste auf der Welt,\n Schau in den Block,\n Und hoer uns schrein, \n Kaiserslautern du bist nie allein!' },
+            { time: 301, lyrics: 'Shalalalala, Shalalalala\n Shalalalala, FC Kaiserlautern ' },
+            { time: 320, lyrics: 'Oh 1.FC Kaiserslautern, du bist mein Verein, \n Wir sind viermal Deutescher Meister \n Und werden es immer sein, \n Seht ihr die Fahnen in der Kurve, \n Rot-weisse Schals in der Hand, \n Kaiserlautern 1900 \n Wir sind der 12.Mann! \n Allez Allez, Lautern Allez!' },
+            { time: 362, lyrics: 'Wir sind die Lautrer,\n Wir hassen Mainz,\n In unserem Land sind wir die Nummer Eins, \n Unsre Farben sind Rot-Weiss-Rot, \n Und wir sind treu bis in den Tod!' },
+            { time: 386, lyrics: 'Unsere Heimat,\n Unsere Liebe,\n In den Farben Rot-Weiss-Rot\n Kaiserlautern 1900, \n Wir sind treu bis in den Tod!' },
+            { time: 413, lyrics: 'Forza FCK, \n Rot-Weiss-Rot Ole,\n Mein Leben hab ich dir vermacht,\n Jeden Tag und jede Nacht,' },
+            { time: 442, lyrics: 'Lautern Allez, \n Lautern Allez,\n Lautern Allez Allez Allez Allez Allez,\n Lautern Allez [Lautern Allez],\n Lautern Allez Allez Allez Allez Allez!' },
+            { time: 475, lyrics: 'Oh FCK dort auf dem Feld, \n du bist das allerschoenste auf der Welt,\n Schau in den Block,\n Und hoer uns schrein, \n Kaiserslautern du bist nie allein!' },
+            { time: 508, lyrics: 'Drum sagen wir auf Wiedersehen, \n Die Zeit mit euch war wunderschoen, \n Es ist wohl besser jetzt zu gehen,\n wir wollen keine Traenen sehen, \n Schoenen Gruss und auf Wiedersehen!' }
+        ];
+
+         // Function to update lyrics based on current time
+         function updateLyrics() {
+            const audio = document.getElementById("audio");
+            const lyricsDiv = document.getElementById("lyrics");
+            const currentTime = audio.currentTime;
+
+            // Find the current chant based on the audio's current time
+            let currentChant = null;
+            for (let i = 0; i < chants.length; i++) {
+                if (currentTime >= chants[i].time && (i === chants.length - 1 || currentTime < chants[i + 1].time)) {
+                    currentChant = chants[i];
+                    break;
+                }
+            }
+
+            // Update the lyrics if a chant is found
+            if (currentChant) {
+                lyricsDiv.textContent = currentChant.lyrics;
+            } else {
+                lyricsDiv.textContent = ""; // Clear lyrics if no chant is found
+            }
+        }
+        // Attach the timeupdate event to the audio element
+        const audio = document.getElementById("audio");
+        audio.addEventListener("timeupdate", updateLyrics);
+
+        // Your existing playAtTime function
         function playAtTime(time, lyrics) {
             const audio = document.getElementById("audio");
             const lyricsDiv = document.getElementById("lyrics");
@@ -92,17 +210,6 @@
             // Display the lyrics
             lyricsDiv.textContent = lyrics;
         }
-
-        // Commentary Section
-        document.getElementById("commentForm").addEventListener("submit", function(event) {
-            event.preventDefault();
-            const comment = document.getElementById("comment").value;
-            const commentsDiv = document.getElementById("comments");
-            const newComment = document.createElement("p");
-            newComment.textContent = comment;
-            commentsDiv.appendChild(newComment);
-            document.getElementById("comment").value = ""; // Clear the textarea
-        });
     </script>
 </body>
 </html>
